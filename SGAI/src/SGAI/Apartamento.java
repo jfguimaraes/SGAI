@@ -1,6 +1,6 @@
 package SGAI;
 
-public class Apartamento extends Imovel implements EstadoImovel {
+public class Apartamento extends Habitacao implements EstadoImovel {
 
 	//variaveis de classe
 	
@@ -9,12 +9,6 @@ public class Apartamento extends Imovel implements EstadoImovel {
      */
 	
 	private Integer numQuartos;  //por defeito sera zero
-	
-	/**
-     * O valor da comissao em percentagem.
-     */
-    private static float fltComissao=0.03f;  
-    
 	
 	/**
      * O valor de classe para contablizar o numero  de instancias da classe Apartamento
@@ -52,51 +46,13 @@ public class Apartamento extends Imovel implements EstadoImovel {
      * @param Distancia distancia entre o imovel e a agencia (minutos)
      * 
      */
-    public Apartamento(Integer idImovel, Integer IdAgente, String morada, String Ei, float Preco,  float Distancia,  Integer numQuartos){
+    public Apartamento(Integer idImovel, Agente agente, String morada, String Ei, float Preco, float Distancia,  Integer numQuartos){
 
     		//invocacao do constructor vazio com parametros de entrada
-    		super(idImovel,IdAgente, morada, Ei, Preco,  Distancia);
-    		this.setNumQuartos(numQuartos);	
+    		super(idImovel,agente, morada, Ei, Preco,  Distancia, numQuartos);
     }
 
-    /**
-     * Devolve a comissao do imovel
-     *
-     * @return fltComissao referente a comissao do imovel
-     */
-	public static float getComissao() {
-		return Apartamento.fltComissao;
-	}
-	
-	/**
-     * Modifica a comissao do imovel
-     *
-     * @param fltComissao a nova comissao do imovel
-     */
-	public static void setComissao(float fltComissao) {
-		Apartamento.fltComissao = fltComissao;
-	}
-	/**
-     * Devolve o numero de Quartos que o apartamento tem.
-     *
-     * @return numQuartos numero d Quartos que  Imovel possui
-     */ 
-	
-	public Integer getNumQuartos() {
-		return numQuartos;
-	}
-
-	
-	/**
-     * Modifica o numero de Quartos.
-     *
-     * @param numQuartos o numero de Quartos que o Apartamento possui
-     */
-	
-	public void setNumQuartos(Integer numQuartos) {
-		this.numQuartos = numQuartos;
-	}
-
+   
 	 
 	public static Integer getContaApartamentos() {
 		return contaApartamentos;
@@ -119,7 +75,7 @@ public class Apartamento extends Imovel implements EstadoImovel {
      * @return Numero de Quartos que o imovel possui
      */	
 	public String toString(){
-		return String.format("%s \nNumero de Quartos: %d ", super.toString(),this.getNumQuartos()); 
+		return String.format("%s", super.toString()); 
 	}
 
 	public static Integer getDuracaoVisita() {
@@ -128,10 +84,6 @@ public class Apartamento extends Imovel implements EstadoImovel {
 
 	public static void setDuracaoVisita(Integer duracaoVisita) {
 		Apartamento.duracaoVisita = duracaoVisita;
-	}
-
-	public  float calculaComissao(){
-		   return getPreco() * fltComissao;
 	}
 
 	public static String getPrefixoXML() {

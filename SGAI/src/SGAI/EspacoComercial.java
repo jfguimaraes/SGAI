@@ -51,11 +51,11 @@ public class EspacoComercial extends Imovel {
       * @param Distancia entre o imovel e a agencia (minutos)
      * 
      */
-    public EspacoComercial(Integer idImovel, Integer IdAgente, String morada, String Ei, float Preco,  float Distancia,  Integer AreaBruta){
+    public EspacoComercial(Integer idImovel, Agente agente, String morada, String Ei, float Preco,  float Distancia,  Integer AreaBruta){
 
     		//invocacao do constructor vazio com parametros de entrada
     		
-    		super(idImovel,IdAgente, morada, Ei, Preco, Distancia);
+    		super(idImovel,agente, morada, Ei, Preco, Distancia);
     		this.setAreaBruta(AreaBruta);	
     }
 

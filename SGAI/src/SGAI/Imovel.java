@@ -22,7 +22,7 @@ public abstract class Imovel implements  Comparable<Imovel>{
 	 /**
 	 * O Identificador do Agente responsavel.
 	 */
-     private Integer intIdAgente;
+     private Agente agente;
      /**
      * Valor com o valor da distancia do imovel e a agencia em minutos
      */
@@ -65,7 +65,7 @@ public abstract class Imovel implements  Comparable<Imovel>{
      public Imovel()
     {
     	this.setIdImovel(Imovel.IDImovel);
-    	this.setIdAgente(Agente.ID_POR_OMISSAO);
+    	this.setAgente(agente);
     	this.setMorada(Imovel.MORADA);
     	this.setEstado(EstadoImovel.ANGARIACAO);
     	this.setPreco(Imovel.PRECO);
@@ -86,10 +86,10 @@ public abstract class Imovel implements  Comparable<Imovel>{
       * @param Distancia entre o imovel e a agencia (minutos)
       * 
       */
-     public Imovel(Integer idImovel, Integer IdAgente, String morada, String Ei, float Preco, float Distancia){
+     public Imovel(Integer idImovel, Agente agente, String morada, String Ei, float Preco, float Distancia){
 
     	this.setIdImovel(idImovel);
-     	this.setIdAgente(IdAgente);
+     	this.setAgente(agente);
      	this.setMorada(morada);
      	this.setEstado(Ei.toString());
      	this.setPreco(Preco);
@@ -137,8 +137,8 @@ public abstract class Imovel implements  Comparable<Imovel>{
      *
      * @return intIdAgente do Agente responsavel
      */
-	public Integer getIdAgente() {
-		return intIdAgente;
+	public Agente getAgente() {
+		return agente;
 	}
 	
 	 /**
@@ -146,8 +146,8 @@ public abstract class Imovel implements  Comparable<Imovel>{
      *
      * @param intIdAgente o novo ID do Agente
      */
-	public void setIdAgente(Integer intIdAgente) {
-		this.intIdAgente = intIdAgente;
+	public void setAgente(Agente agente) {
+		this.agente = agente;
 	}
 	
 	
@@ -239,9 +239,8 @@ public abstract class Imovel implements  Comparable<Imovel>{
       * @return Distancia do imovel A agencia em minutos
      */	
 	
-     public String toString()
-     {
-    	 return String.format("IdImovel: %d \nMorada do Imovel: %s \nID Agente %s \nEstado: %s \nPreco: %.1f € \nDistancia: %.1f Minutos",this.getIdImovel(),this.getMorada(),this.getIdAgente(),this.getEstado(),this.getPreco(),this.getDistancia());
+     public String toString() {
+    	 return String.format("IdImovel: %d \nMorada do Imovel: %s \nID Agente %s \nEstado: %s \nPreco: %.1f € \nDistancia: %.1f Minutos",this.getIdImovel(),this.getMorada(),this.agente.toString(),this.getEstado(),this.getPreco(),this.getDistancia());
      }
      
      

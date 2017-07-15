@@ -1,14 +1,9 @@
 package SGAI;
 
-public class Moradia extends Imovel{
+public class Moradia extends Habitacao{
 
 	//variaveis de classe
 	
-		/**
-	     * regista o numero de Quartos.
-	     */
-		
-		private Integer numQuartos;  //por defeito sera zero
 		
 		/**
 	     * regista o numero de Frentes.
@@ -45,7 +40,6 @@ public class Moradia extends Imovel{
 	   {
 		   	//invocacao do constructor vazio da superclasse
 	    	super();
-		   	this.setNumQuartos(0);
 		   	this.setNumFrentes(0);
 	   	}
 	    
@@ -61,11 +55,10 @@ public class Moradia extends Imovel{
 	     * @param numQuartos define o numero de quartos da moradia
 	     * @param Numfrentes define o numero de frentes da moradia
 	     */
-	    public Moradia(Integer idImovel, Integer IdAgente, String morada, String Ei, float Preco,  float Distancia,  Integer numQuartos,Integer numFrentes){
+	    public Moradia(Integer idImovel, Agente agente, String morada, String Ei, float Preco,  float Distancia,  Integer numQuartos,Integer numFrentes){
 
 	    		//invocacao do constructor vazio com parametros de entrada
-	    		super(idImovel,IdAgente, morada, Ei, Preco,  Distancia);
-	    		this.setNumQuartos(numQuartos);	
+	    		super(idImovel,agente, morada, Ei, Preco,Distancia,numQuartos);
 	    		this.setNumFrentes(numFrentes);
 	    }
 
@@ -86,33 +79,6 @@ public class Moradia extends Imovel{
 		public static void setComissao(float fltComissao) {
 			Moradia.fltComissao = fltComissao;
 		}
-		
-		/**
-	     * Devolve o numero de Quartos que o apartamento tem.
-	     *
-	     * @return numQuartos numero de Quartos que  Imovel possui
-	     */ 
-		
-		public Integer getNumQuartos() {
-			return numQuartos;
-		}
-
-		
-		/**
-	     * Modifica o numero de Quartos.
-	     *
-	     * @param numQuartos o numero de Quartos que o Apartamento possui
-	     */
-		
-		public void setNumQuartos(Integer numQuartos) {
-			this.numQuartos = numQuartos;
-		}
-
-		
-		 public  float calculaComissao(){
-			 return getPreco() * getComissao() ;
-		 }
-
 		 
 		public static String getPrefixo(){
 			return new String(prefixo);
@@ -137,10 +103,8 @@ public class Moradia extends Imovel{
 	     * @return numero de Frentes que o Imovel possui
 	     */	
 		public String toString(){
-			return String.format("%s \nNumero de Quartos: %d \nNumero de Frentes: %d", super.toString(),this.getNumQuartos(), this.getNumFrentes()); 
+			return String.format("%s \nNumero de Frentes: %d", super.toString(),this.getNumFrentes()); 
 		}
-
-		
 		/**
 	     * Devolve o numero de Frentes que a moradia tem.
 	     *

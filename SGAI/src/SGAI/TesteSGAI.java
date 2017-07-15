@@ -94,11 +94,11 @@ public class TesteSGAI {
 				break;
 				
 			case 8:
-				if (!verificaImoveis(imoveis)) {
-					vis=agendarVisita(imoveis,agentes,visitas);
-					if(vis.getNomeVisitante().length()>0){
-					visitas.add(vis);}
-				}
+//				if (!verificaImoveis(imoveis)) {
+//					vis=agendarVisita(imoveis,agentes,visitas);
+//					if(vis.getNomeVisitante().length()>0){
+//					visitas.add(vis);}
+//				}
 				primaEnter();
 				break;
 			case 9: 
@@ -196,6 +196,7 @@ public class TesteSGAI {
 		boolean dadosInvalidos = true;
 		Integer idAgente = null,numQuartos = null;
 		Float preco = null,distancia = null;
+		
 		String morada = null;
 		do{
 			System.out.println("Morada: ");
@@ -225,7 +226,10 @@ public class TesteSGAI {
 			}
 		}while (dadosInvalidos);
 		
-		return new Apartamento(Apartamento.getContaApartamentos(), idAgente, morada,EstadoImovel.ACTIVO,preco,distancia,numQuartos);
+		Agente agente = getAgenteByID(idAgente, agentes);
+		
+		
+		return new Apartamento(Apartamento.getContaApartamentos(),agente , morada,EstadoImovel.ACTIVO,preco,distancia,numQuartos);
 		
 		//verifica o IDAgente
 		
@@ -264,7 +268,9 @@ public class TesteSGAI {
 //				}
 				//}while (dadosInvalidos);
 				//Moradia(Integer idImovel, Integer IdAgente, String morada, String Ei, float Preco,  float Distancia,  Integer numQuartos,Integer numFrentes){
-				return new Moradia(Moradia.getContaMoradia(),idAgente,morada,EstadoImovel.ACTIVO,preco,distancia,numQuartos,numFrentes);
+				Agente agente = getAgenteByID(idAgente, agentes);
+				
+				return new Moradia(Moradia.getContaMoradia(),agente,morada,EstadoImovel.ACTIVO,preco,distancia,numQuartos,numFrentes);
 			}
 			//EspacoComercial
 			private static EspacoComercial criarEspacoComercial(ArrayList<Agente> agentes) {
@@ -297,8 +303,8 @@ public class TesteSGAI {
 				}
 				}while (dadosInvalidos);
 				EspacoComercial.setContaEspacoComercial(EspacoComercial.getContaEspacoComerciail()+1);
-				//EspacoComercial(Integer idImovel, Integer IdAgente, String morada, String Ei, float Preco,  float Distancia,  Integer AreaBruta){
-				return new EspacoComercial(EspacoComercial.getContaEspacoComerciail(),idAgenteEC,moradaEC,EstadoImovel.ACTIVO,precoEC,distanciaEC,areaBrutaEC);
+				Agente agente = getAgenteByID(idAgenteEC, agentes);
+				return new EspacoComercial(EspacoComercial.getContaEspacoComerciail(),agente,moradaEC,EstadoImovel.ACTIVO,precoEC,distanciaEC,areaBrutaEC);
 			}
 			
 //			Listagens
@@ -317,11 +323,11 @@ public class TesteSGAI {
 			    ArrayList<Imovel>auxImoveis = new ArrayList<>(); 
 			    for(Imovel imovel: imoveis) {
 			    	if(option.equals("Todos")) {
-			    		if (imovel.getIdAgente() == idAgente) {
+			    		if (imovel.getAgente().getIdAgente() == idAgente) {
 			    			auxImoveis.add(imovel);
 			    		}
 			      } else if (option.equals("Vendidos")) {
-			    	if(imovel.getEstado() == EstadoImovel.VENDIDO && imovel.getIdAgente() == idAgente) {
+			    	if(imovel.getEstado() == EstadoImovel.VENDIDO && imovel.getAgente().getIdAgente() == idAgente) {
 			    		auxImoveis.add(imovel);
 			    	}
 			      } else {
@@ -351,89 +357,94 @@ public class TesteSGAI {
 				}
 			}
 			//f
-			private static Visita agendarVisita(ArrayList<Imovel>imoveis,ArrayList<Agente> agentes,ArrayList<Visita> visitas) {
-				Object im;
-				//Imovel imo;
-				System.out.println("Indique o id do Imovel para a visita: ");
-				Integer idImovel = in.nextInt();
-				Integer idAgente = 0; 
-				Float distancia =0.0f;
-				Integer duracaoVisita =0;
-						
-				im=DevolveImovelPorId(imoveis,  idImovel);
-				while(!(im instanceof Imovel)){
-					System.out.println("O id do imovel que inseriu Não existe, por favor insira um novo: ");
-					idImovel = in.nextInt(); 
-					im=DevolveImovelPorId(imoveis,  idImovel);
-					
-				}
-				
-				
-				if(im instanceof Imovel)
-				{
-					Imovel imo= (Imovel) im;
-					idAgente=imo.getIdAgente();
-					distancia=imo.getDistancia();
-					if(imo.getClass().getName()=="Apartamento")
-					{
-						duracaoVisita=Apartamento.getDuracaoVisita();
-					}
-					else if(imo.getClass().getName()=="Moradia"){
-						duracaoVisita=Moradia.getDuracaoVisita();
-					}
-					else if(imo.getClass().getName()=="EspacoComercial"){
-						duracaoVisita=EspacoComercial.getDuracaoVisita();
-					}
-					
-					if(imo.getEstado()==EstadoImovel.VENDIDO){
-						System.out.println("Ja esta Vendido o Imovel com o ID" + imo.getIdImovel());
-						imo=null;
-					}
-					
-				}
-				
-				//Integer idAgente = im.getIdAgente();
-				
-				System.out.println("Data Visita no formato YYYY/MM/DD HH:MM:SS");
-				String dataVisita = "";
-				dataVisita= in.nextLine();
-				while(dataVisita.length()<=12)
-				{
-					System.out.println("Data invalida, tente de novo");
-					System.out.println("Data Visita no formato YYYY/MM/DD HH:MM:SS");
-					dataVisita = in.nextLine();
-				}
-				//visitas.add(new Visita(1,1,"2017/08/15 12:00:00","filipe",1234));
-				if(!verificaExisteVisitaAgendaNoDia(visitas, idAgente, dataVisita)){
-					System.out.println("Nome Visitante :");
-					String nomeVisitante = in.nextLine();
-					System.out.println("Telefone Visitante: ");
-					Integer numTelef = in.nextInt();
-					System.out.println("Visita agenda!!");
-					return new Visita(idAgente, idImovel, dataVisita, nomeVisitante, numTelef);
-				}
-				else
-				{
-					if(verificaDisponbildaedeAgendaNoDia(visitas, idAgente, idImovel,  dataVisita,imoveis)==true)
-					{
-						System.out.println("Nome Visitante :");
-						String nomeVisitante = in.nextLine();
-						System.out.println("Telefone Visitante: ");
-						Integer numTelef = in.nextInt();
-						System.out.println("Visita agenda!!");
-						return new Visita(idAgente, idImovel, dataVisita, nomeVisitante, numTelef);
-					}
-					else
-					{
-						System.out.println("Sobreposicao de Visita, tente noutra data/hora!");
-						return new Visita();
-					}
-					
-				}
-				
-				//return new Visita(idAgente, idImovel, dataVisita, nomeVisitante, numTelef);
-			}
-			
+//			private static Visita agendarVisita(ArrayList<Imovel>imoveis,ArrayList<Agente> agentes,ArrayList<Visita> visitas) {
+//				Object im;
+//				//Imovel imo;
+//				System.out.println("Indique o id do Imovel para a visita: ");
+//				Integer idImovel = in.nextInt();
+//				Integer idAgente = 0; 
+//				Float distancia = 0.0f;
+//				Integer duracaoVisita =0;
+//						
+//				im=DevolveImovelPorId(imoveis,  idImovel);
+//				while(!(im instanceof Imovel)){
+//					System.out.println("O id do imovel que inseriu Não existe, por favor insira um novo: ");
+//					idImovel = in.nextInt(); 
+//					im=DevolveImovelPorId(imoveis,  idImovel);
+//					
+//				}
+//				
+//				
+//				if(im instanceof Imovel)
+//				{
+//					Imovel imo= (Imovel) im;
+//					idAgente=imo.getAgente().getIdAgente();
+//					distancia=imo.getDistancia();
+//					if(imo.getClass().getName()=="Apartamento")
+//					{
+//						duracaoVisita=Apartamento.getDuracaoVisita();
+//					}
+//					else if(imo.getClass().getName()=="Moradia"){
+//						duracaoVisita=Moradia.getDuracaoVisita();
+//					}
+//					else if(imo.getClass().getName()=="EspacoComercial"){
+//						duracaoVisita=EspacoComercial.getDuracaoVisita();
+//					}
+//					
+//					if(imo.getEstado()==EstadoImovel.VENDIDO){
+//						System.out.println("Ja esta Vendido o Imovel com o ID" + imo.getIdImovel());
+//						imo=null;
+//					}
+//					
+//				}
+//				
+//				//Integer idAgente = im.getIdAgente();
+//				
+//				System.out.println("Dia: ");
+//				int ano = in.nextInt();
+//				System.out.println("Mês: ");
+//				int mes = in.nextInt();
+//				System.out.println("Dia: ");
+//				int dia = in.nextInt();
+//				System.out.println("Hora: ");
+//				int hora = in.nextInt();
+//				System.out.println("Minuto: ");
+//				int minuto = in.nextInt();
+//				Data dataVisita = new Data(ano,mes,dia);
+//				Tempo tempoVisita = new Tempo(hora,minuto);
+//				//visitas.add(new Visita(1,1,"2017/08/15 12:00:00","filipe",1234));
+//				if(!verificaExisteVisitaAgendaNoDia(visitas, idAgente, dataVisita)){
+//					System.out.println("Nome Visitante :");
+//					String nomeVisitante = in.nextLine();
+//					System.out.println("Telefone Visitante: ");
+//					Integer numTelef = in.nextInt();
+//					System.out.println("Visita agenda!!");
+//					Agente agente = getAgenteByID(idAgente, agentes);
+//					return new Visita(agente, idImovel, dataVisita,tempoVisita,nomeVisitante, numTelef);
+//				}
+//				else
+//				{
+//					if(verificaDisponbildaedeAgendaNoDia(visitas, idAgente, idImovel,dataVisita,tempoVisita,imoveis)==true)
+//					{
+//						System.out.println("Nome Visitante :");
+//						String nomeVisitante = in.nextLine();
+//						System.out.println("Telefone Visitante: ");
+//						Integer numTelef = in.nextInt();
+//						System.out.println("Visita agenda!!");
+//						Agente agente = getAgenteByID(idAgente, agentes);
+//						return new Visita(agente, idImovel, dataVisita, tempoVisita,nomeVisitante, numTelef);
+//					}
+//					else
+//					{
+//						System.out.println("Sobreposicao de Visita, tente noutra data/hora!");
+//						return new Visita();
+//					}
+//					
+//				}
+//				
+//				//return new Visita(idAgente, idImovel, dataVisita, nomeVisitante, numTelef);
+//			}
+//			
 			
 			
 			private static void listarVisitas(ArrayList<Visita> visitas,ArrayList<Imovel> imoveis) {
@@ -444,7 +455,7 @@ public class TesteSGAI {
 				    // ArrayList<Visita>auxVisitas = new ArrayList<>();
 				for (Visita vis: visitas) {
 						//System.out.println("Agente:" + vis.getIntIdAgente() + "-->" + (vis.getIntIdAgente() == idAgente));
-						if ((vis.getIntIdAgente()==idAgente)==true) {
+						if ((vis.getAgente().getIdAgente()==idAgente)==true) {
 							imov=(Imovel)DevolveImovelPorId(imoveis, vis.getIdImovel());
 							System.out.println(imov.toString());
 							System.out.println(vis.toString());
@@ -455,146 +466,146 @@ public class TesteSGAI {
 				System.out.println("\n******Fim da listagem*****\n");
 			}
 			
-			private static Boolean verificaDisponbildaedeAgendaNoDia(ArrayList<Visita>visitas, Integer idAgente,Integer IdImovel, String Dia,ArrayList<Imovel>imoveis) {
-				boolean flagHoraInicio=true;
-				boolean flagHoraFim=true;
-				String dataVisita;
-				Integer IdImovelV;
-				float tempoVisita=0;
-				float tempoDistancia=0;
-				Imovel imov,imovMarcado;
-
-				boolean flag=true;
-				
-				float tempoVisitaMarcado=0;
-				float tempoDistanciaMarcado=0;
-				
-				//dados do imovel para o qual se pretende agendar visita
-				imov=(Imovel)DevolveImovelPorId(imoveis, IdImovel);
-				//System.out.println("CLASSE" + imov.getClass().getName());
-				if(imov.getClass().getName()=="SGAI.Apartamento")
-				{
-					tempoVisita=Apartamento.getDuracaoVisita();
-				}
-				else if(imov.getClass().getName()=="SGAI.Moradia"){
-					tempoVisita=Moradia.getDuracaoVisita();
-				}
-				else if(imov.getClass().getName()=="SGAI.EspacoComercial"){
-					tempoVisita=EspacoComercial.getDuracaoVisita();
-				}
-				
-				
-				tempoDistancia=imov.getDistancia();
-				
-				for (Visita vis: visitas) 
-				{
-					//basta existir uma marcacao nas visitas agendadas com conflito que impossibilita a marcacao
-					//Melhoramentos: retirar desta pesquisa Imoveis Vendidos
-					if (idAgente == vis.getIntIdAgente()) {
-						dataVisita=vis.getDataVisita();
-						IdImovelV=vis.getIdImovel();
-						
-						//dados do imovel que ja tem visista marcada
-						imovMarcado=(Imovel)DevolveImovelPorId(imoveis, IdImovelV);
-					if(!(imovMarcado.getEstado()== EstadoImovel.VENDIDO))	
-					{
-						System.out.println();
-						if(imovMarcado.getClass().getName().equals("SGAI.Apartamento"))
-						{
-							tempoVisitaMarcado=Apartamento.getDuracaoVisita();
-						}
-						else if(imovMarcado.getClass().getName().equals("SGAI.Moradia")){
-							tempoVisitaMarcado=Moradia.getDuracaoVisita();
-						}
-						else if(imovMarcado.getClass().getName().equals("SGAI.EspacoComercial")){
-							tempoVisitaMarcado=EspacoComercial.getDuracaoVisita();
-						}
-						
-						tempoDistanciaMarcado=imovMarcado.getDistancia();
-						
-						String d= getAno(dataVisita) + "/"+ getMes(dataVisita) + "/" + getDia(dataVisita);
-						String d2= getAno(Dia) + "/"+ getMes(Dia) + "/" + getDia(Dia);
-						DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-					    LocalDate ld = LocalDate.parse(d, DATEFORMATTER);
-					    LocalDate ld2 = LocalDate.parse(d2, DATEFORMATTER);
-				        Period period = Period.between(ld, ld2);
-					    
-				        if(period.getDays()==0)
-					    {	
-					    	LocalTime horaAgenda = LocalTime.of(Integer.parseInt(getHora(dataVisita)),Integer.parseInt(getMinutos(dataVisita)),Integer.parseInt(getSegundos(dataVisita)));
-							LocalTime horaPretendida = LocalTime.of(Integer.parseInt(getHora(Dia)),Integer.parseInt(getMinutos(Dia)),Integer.parseInt(getSegundos(Dia)));
-							
-							
-							LocalTime horafimVisitaSemDesloc=horaAgenda.plusMinutes( Math.round(tempoVisitaMarcado));
-							LocalTime horafimVisitaComDesloc=horafimVisitaSemDesloc.plusMinutes(Math.round(tempoDistanciaMarcado));
-							
-							LocalTime horaInicioVisitaComDesloc=horaAgenda.minusMinutes(Math.round(tempoDistanciaMarcado));
-							
-							LocalTime horaInicioPretendidoComDesloc=horaPretendida.minusMinutes(Math.round(tempoDistancia));
-							LocalTime horaInicioPretendidoSemDesloc=horaPretendida.minusMinutes(0);
-							
-							LocalTime horafimPretendidoSemDesloc=horaPretendida.plusMinutes(Math.round(tempoVisita));
-							
-							
-							if(IdImovelV==IdImovel)
-							{
-							  //a visita é no mesmo local 
-							  //a hora de visita pretendida tem que iniciar depois da  anterior.	
-								
-								Duration duration = Duration.between(horafimVisitaSemDesloc, horaInicioPretendidoSemDesloc);
-								Duration duration2 = Duration.between(horafimPretendidoSemDesloc, horaAgenda);
-								
-								if(duration.getSeconds()>0 )
-								{
-									//?
-								}
-								else
-								{
-										if(duration2.getSeconds()>0 )
-										{
-											//?
-										}
-										else
-										{
-											flag=false;
-										}
-								}
-							}
-								
-			    			else
-							{
-								//o local de visita é noutro local/imovel
-								//AQUI
-								Duration duration3 = Duration.between(horafimVisitaComDesloc, horaInicioPretendidoComDesloc);
-								Duration duration4 = Duration.between(horaInicioPretendidoComDesloc, horaInicioVisitaComDesloc);
-								
-								if(duration3.getSeconds()>0 )
-								{
-									//?
-								}
-								else
-								{
-										if(duration4.getSeconds()>0 )
-										{
-											
-										}
-										else
-										{
-											flag=false;
-										}
-								}
-							 }
-								//ATE AQUI
-																
-					    }//IF se é no mesmo dia!!
-				        
-						}   //Fim if Vendido
-					}//SE é do mesmo agente
-				
-				
-			}
-				return flag;
-		  }
+//			private static Boolean verificaDisponbildaedeAgendaNoDia(ArrayList<Visita>visitas, Integer idAgente,Integer IdImovel, Data dataVisita,Tempo tempovisita,ArrayList<Imovel>imoveis) {
+//				boolean flagHoraInicio=true;
+//				boolean flagHoraFim=true;
+//				Data dataVisitaRecebida;
+//				Integer IdImovelV;
+//				float tempoVisita=0;
+//				float tempoDistancia=0;
+//				Imovel imov,imovMarcado;
+//
+//				boolean flag=true;
+//				
+//				float tempoVisitaMarcado=0;
+//				float tempoDistanciaMarcado=0;
+//				
+//				//dados do imovel para o qual se pretende agendar visita
+//				imov=(Imovel)DevolveImovelPorId(imoveis, IdImovel);
+//				//System.out.println("CLASSE" + imov.getClass().getName());
+//				if(imov.getClass().getName()=="SGAI.Apartamento")
+//				{
+//					tempoVisita=Apartamento.getDuracaoVisita();
+//				}
+//				else if(imov.getClass().getName()=="SGAI.Moradia"){
+//					tempoVisita=Moradia.getDuracaoVisita();
+//				}
+//				else if(imov.getClass().getName()=="SGAI.EspacoComercial"){
+//					tempoVisita=EspacoComercial.getDuracaoVisita();
+//				}
+//				
+//				
+//				tempoDistancia=imov.getDistancia();
+//				
+//				for (Visita vis: visitas) 
+//				{
+//					//basta existir uma marcacao nas visitas agendadas com conflito que impossibilita a marcacao
+//					//Melhoramentos: retirar desta pesquisa Imoveis Vendidos
+//					if (idAgente == vis.getAgente().getIdAgente()) {
+//						dataVisita=vis.getDataVisita();
+//						IdImovelV=vis.getIdImovel();
+//						
+//						//dados do imovel que ja tem visista marcada
+//						imovMarcado=(Imovel)DevolveImovelPorId(imoveis, IdImovelV);
+//					if(!(imovMarcado.getEstado()== EstadoImovel.VENDIDO))	
+//					{
+//						System.out.println();
+//						if(imovMarcado.getClass().getName().equals("SGAI.Apartamento"))
+//						{
+//							tempoVisitaMarcado=Apartamento.getDuracaoVisita();
+//						}
+//						else if(imovMarcado.getClass().getName().equals("SGAI.Moradia")){
+//							tempoVisitaMarcado=Moradia.getDuracaoVisita();
+//						}
+//						else if(imovMarcado.getClass().getName().equals("SGAI.EspacoComercial")){
+//							tempoVisitaMarcado=EspacoComercial.getDuracaoVisita();
+//						}
+//						
+//						tempoDistanciaMarcado=imovMarcado.getDistancia();
+//						
+//						String d= getAno(dataVisita) + "/"+ getMes(dataVisita) + "/" + getDia(dataVisita);
+//						String d2= getAno(Dia) + "/"+ getMes(Dia) + "/" + getDia(Dia);
+//						DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+//					    LocalDate ld = LocalDate.parse(d, DATEFORMATTER);
+//					    LocalDate ld2 = LocalDate.parse(d2, DATEFORMATTER);
+//				        Period period = Period.between(ld, ld2);
+//					    
+//				        if(period.getDays()==0)
+//					    {	
+//					    	LocalTime horaAgenda = LocalTime.of(Integer.parseInt(getHora(dataVisita)),Integer.parseInt(getMinutos(dataVisita)),Integer.parseInt(getSegundos(dataVisita)));
+//							LocalTime horaPretendida = LocalTime.of(Integer.parseInt(getHora(Dia)),Integer.parseInt(getMinutos(Dia)),Integer.parseInt(getSegundos(Dia)));
+//							
+//							
+//							LocalTime horafimVisitaSemDesloc=horaAgenda.plusMinutes( Math.round(tempoVisitaMarcado));
+//							LocalTime horafimVisitaComDesloc=horafimVisitaSemDesloc.plusMinutes(Math.round(tempoDistanciaMarcado));
+//							
+//							LocalTime horaInicioVisitaComDesloc=horaAgenda.minusMinutes(Math.round(tempoDistanciaMarcado));
+//							
+//							LocalTime horaInicioPretendidoComDesloc=horaPretendida.minusMinutes(Math.round(tempoDistancia));
+//							LocalTime horaInicioPretendidoSemDesloc=horaPretendida.minusMinutes(0);
+//							
+//							LocalTime horafimPretendidoSemDesloc=horaPretendida.plusMinutes(Math.round(tempoVisita));
+//							
+//							
+//							if(IdImovelV==IdImovel)
+//							{
+//							  //a visita é no mesmo local 
+//							  //a hora de visita pretendida tem que iniciar depois da  anterior.	
+//								
+//								Duration duration = Duration.between(horafimVisitaSemDesloc, horaInicioPretendidoSemDesloc);
+//								Duration duration2 = Duration.between(horafimPretendidoSemDesloc, horaAgenda);
+//								
+//								if(duration.getSeconds()>0 )
+//								{
+//									//?
+//								}
+//								else
+//								{
+//										if(duration2.getSeconds()>0 )
+//										{
+//											//?
+//										}
+//										else
+//										{
+//											flag=false;
+//										}
+//								}
+//							}
+//								
+//			    			else
+//							{
+//								//o local de visita é noutro local/imovel
+//								//AQUI
+//								Duration duration3 = Duration.between(horafimVisitaComDesloc, horaInicioPretendidoComDesloc);
+//								Duration duration4 = Duration.between(horaInicioPretendidoComDesloc, horaInicioVisitaComDesloc);
+//								
+//								if(duration3.getSeconds()>0 )
+//								{
+//									//?
+//								}
+//								else
+//								{
+//										if(duration4.getSeconds()>0 )
+//										{
+//											
+//										}
+//										else
+//										{
+//											flag=false;
+//										}
+//								}
+//							 }
+//								//ATE AQUI
+//																
+//					    }//IF se é no mesmo dia!!
+//				        
+//						}   //Fim if Vendido
+//					}//SE é do mesmo agente
+//				
+//				
+//			}
+//				return flag;
+//		  }
 		  
 		public static String getHora(String date){
 			int pos=date.indexOf(" ");
@@ -676,7 +687,7 @@ public class TesteSGAI {
 				 for (Agente ag: agentes) {
 					 float totalAgente = 0.0f; 
 					 for (Imovel imov: imoveis) {
-						 if (ag.getIdAgente() == imov.getIdAgente() && imov.getEstado() == EstadoImovel.VENDIDO) {
+						 if (ag.getIdAgente() == imov.getAgente().getIdAgente() && imov.getEstado() == EstadoImovel.VENDIDO) {
 							totalAgente = totalAgente + imov.calculaComissao(); 
 							
 						 }
@@ -717,6 +728,8 @@ public class TesteSGAI {
 	            
 	            public void endElement(String uri, String localName, String qName) throws SAXException {
 	                String id = dados.get(0);
+	                int idAgente = 0;
+	                Agente agente = null;
 	                switch(qName){
 	                case "agente":
 	                	id = id.replaceAll(Agente.getPrefixoXML(), "");
@@ -728,9 +741,10 @@ public class TesteSGAI {
 	    				String morada = dados.get(1) + dados.get(2);
 						Integer quartos = Integer.parseInt(dados.get(3));
 	    				float preco = Float.parseFloat(dados.get(4));
-						String agente = dados.get(5).replaceAll(Agente.getPrefixoXML(), "");
+						idAgente = Integer.parseInt(dados.get(5).replaceAll(Agente.getPrefixoXML(), ""));
+						agente = getAgenteByID(idAgente, agentes);
 						float distancia = Float.parseFloat(dados.get(6));
-	    				imoveis.add(new Apartamento(Integer.parseInt(id), Integer.parseInt(agente),morada,EstadoImovel.ACTIVO, preco, distancia,quartos));
+	    				imoveis.add(new Apartamento(Integer.parseInt(id), agente,morada,EstadoImovel.ACTIVO, preco, distancia,quartos));
 	    				break;
 	    			case "moradia" :
 	    				id = id.replaceAll(Moradia.getPrefixo(), "");
@@ -738,18 +752,20 @@ public class TesteSGAI {
 						int quartosMor = Integer.parseInt(dados.get(3));
 						int frentesMor = Integer.parseInt(dados.get(4));
 	    				float precoMor = Float.parseFloat(dados.get(5));
-						String agenteMor = dados.get(6).replaceAll(Agente.getPrefixoXML(), "");
+	    				idAgente = Integer.parseInt(dados.get(5).replaceAll(Agente.getPrefixoXML(), ""));
+						agente = getAgenteByID(idAgente, agentes);
 						float distanciaMor = Float.parseFloat(dados.get(7));
-						imoveis.add(new Moradia(Integer.parseInt(id), Integer.parseInt(agenteMor),moradaMor,EstadoImovel.ACTIVO, precoMor, distanciaMor,quartosMor,frentesMor));
+						imoveis.add(new Moradia(Integer.parseInt(id), agente,moradaMor,EstadoImovel.ACTIVO, precoMor, distanciaMor,quartosMor,frentesMor));
 	    				break;
 					case "espaco-comercial":
 						id = id.replaceAll(EspacoComercial.getPrefixo(),"");
 						String moradaEC = dados.get(1) + dados.get(2);
 						Integer areaEC = Integer.parseInt(dados.get(3));
 	    				float precoEC = Float.parseFloat(dados.get(4));
-						String agenteEC = dados.get(5).replaceAll(Agente.getPrefixoXML(), "");
+	    				idAgente = Integer.parseInt(dados.get(5).replaceAll(Agente.getPrefixoXML(), ""));
+						agente = getAgenteByID(idAgente, agentes);
 						float distanciaEC = Float.parseFloat(dados.get(6));
-	    				imoveis.add(new EspacoComercial(Integer.parseInt(id), Integer.parseInt(agenteEC),moradaEC, EstadoImovel.ACTIVO,precoEC,distanciaEC,areaEC));
+	    				imoveis.add(new EspacoComercial(Integer.parseInt(id), agente,moradaEC, EstadoImovel.ACTIVO,precoEC,distanciaEC,areaEC));
 	    				break;
 	                }
 	            }
@@ -790,6 +806,16 @@ public class TesteSGAI {
 					imoveis.add((Imovel) obj);
 			}
 			fIn.close();
+		}
+		
+		private static Agente getAgenteByID(int idAgente,ArrayList<Agente>agentes) {
+			
+			for(Agente agente:agentes) {
+				if(idAgente == agente.getIdAgente())
+					return agente;
+				
+			}
+			return null;
 		}
 		
 		
@@ -853,11 +879,11 @@ public class TesteSGAI {
 			return imov; 
 			
 		}
-		private static Boolean verificaExisteVisitaAgendaNoDia(ArrayList<Visita>visitas, Integer idAgente, String Dia) {
+		/*private static Boolean verificaExisteVisitaAgendaNoDia(ArrayList<Visita>visitas, Integer idAgente, Data dataVisita) {
 			boolean flag=false;
-			String dataVisita;
+			Data dataVisita;
 			for (Visita vis: visitas) 
-				if (idAgente == vis.getIntIdAgente()) {
+				if (idAgente == vis.getAgente().getIdAgente()) {
 					dataVisita=vis.getDataVisita();
 					String d= getAno(dataVisita) + "/"+ getMes(dataVisita) + "/" + getDia(dataVisita);
 					String d2= getAno(Dia) + "/"+ getMes(Dia) + "/" + getDia(Dia);
@@ -874,7 +900,7 @@ public class TesteSGAI {
 				}
 			return flag; 
 			
-		}
+		}*/
 		public static String getAno(String date){
 			   int pos=date.indexOf("/");
 			   return  date.substring(0, pos);
